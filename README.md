@@ -249,13 +249,6 @@ The memory tests provide detailed output including:
 - Memory growth rate
 - Total memory growth
 
-Example output:
-```
-Memory stats - Alloc: 1024 KB, Sys: 2048 KB, NumGC: 5
-Memory growth rate: 60.00%
-Total memory growth: -28 KB
-```
-
 ## License
 
 MIT

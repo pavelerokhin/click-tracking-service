@@ -2,15 +2,15 @@ package worker
 
 import (
 	"context"
-	"rsclabs-test/internal/repository"
 	"time"
 
+	"rsclabs-test/internal/repository"
 	"rsclabs-test/internal/service"
 	"rsclabs-test/pkg/observe"
 )
 
 const (
-	statisticsUpdateInterval = 15 * time.Second
+	statisticsUpdateInterval = 1 * time.Minute
 )
 
 type StatisticsWorker struct {

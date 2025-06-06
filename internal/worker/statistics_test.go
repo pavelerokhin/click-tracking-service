@@ -31,7 +31,6 @@ func TestStatisticsWorkerRun(t *testing.T) {
 	// Start the worker
 	worker.Run(context.Background())
 
-	// Register some clicks
 	for i := 0; i < 5; i++ {
 		worker.bannerRepository.RegisterClick(1)
 	}
@@ -56,10 +55,8 @@ func TestStatisticsWorkerShutdown(t *testing.T) {
 	// Start the worker
 	worker.Run(ctx)
 
-	// Wait for context cancellation
 	time.Sleep(200 * time.Millisecond)
 
-	// Verify worker has stopped
 	snapshots := worker.statisticsService.GetSnapshots()
 	initialCount := len(snapshots)
 
@@ -92,7 +89,6 @@ func TestStatisticsWorkerConcurrentClicks(t *testing.T) {
 		}()
 	}
 
-	// Wait for all goroutines to complete
 	for i := 0; i < goroutines; i++ {
 		<-done
 	}

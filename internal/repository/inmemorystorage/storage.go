@@ -9,7 +9,6 @@ import (
 	"rsclabs-test/pkg/observe"
 )
 
-// InMemoryStorage is a thread-safe generic storage using an array
 type InMemoryStorage struct {
 	mux          sync.RWMutex
 	maxCapacity  int
@@ -20,7 +19,6 @@ type InMemoryStorage struct {
 	l            *observe.Logger
 }
 
-// NewInMemoryStorage creates a new instance of InMemoryStorage
 func NewInMemoryStorage(maxCapacity int, l *observe.Logger) *InMemoryStorage {
 	values := make(map[int]*model.Banner, maxCapacity)
 	storage := InMemoryStorage{

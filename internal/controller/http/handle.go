@@ -64,7 +64,6 @@ func (r *routes) handleStatsRequest(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid banner ID format"})
 	}
 
-	// Parse JSON body
 	var requestBody struct {
 		From string `json:"from"`
 		To   string `json:"to"`
@@ -82,25 +81,20 @@ func (r *routes) handleStatsRequest(c *fiber.Ctx) error {
 
 	stats, err := r.statistics.GetStatistics(c.Context(), request)
 	if err != nil {
-		// Check if it's a "no data" error specifically
 		if strings.Contains(err.Error(), "no statistics data available") {
-			// Return empty stats instead of error
 			return c.JSON(fiber.Map{
 				"stats": []interface{}{}, // Empty array
 			})
 		}
 
-		// For other errors, log and return 500
 		r.l.Error(fmt.Errorf("failed to get statistics: %w", err))
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to retrieve statistics"})
 	}
 
-	// Check if stats is empty using your existing method
 	if stats.IsEmpty() {
 		r.l.Debug("no statistics found for banner ID", map[string]any{
 			"banner_id": bannerID,
 		})
-		// Return empty stats instead of 404
 		return c.JSON(fiber.Map{
 			"stats": []interface{}{}, // Empty array
 		})

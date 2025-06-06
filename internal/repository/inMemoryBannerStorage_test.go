@@ -15,7 +15,6 @@ func setupTestRepository() *BannerRepositoryInMemory {
 func TestRegisterClick(t *testing.T) {
 	repo := setupTestRepository()
 
-	// Test registering a click for a valid ID
 	err := repo.RegisterClick(1)
 	if err != nil {
 		t.Errorf("RegisterClick failed: %v", err)
@@ -29,7 +28,6 @@ func TestRegisterClick(t *testing.T) {
 		}
 	}
 
-	// Verify the count in snapshot
 	snapshot := repo.GetCountSnapshot()
 	found := false
 	for _, banner := range snapshot.Banners {
@@ -49,19 +47,16 @@ func TestRegisterClick(t *testing.T) {
 func TestGetCountSnapshot(t *testing.T) {
 	repo := setupTestRepository()
 
-	// Register some clicks
 	repo.RegisterClick(1)
 	repo.RegisterClick(2)
 	repo.RegisterClick(1)
 
 	snapshot := repo.GetCountSnapshot()
 
-	// Verify snapshot structure
 	if snapshot.TimeStamp.IsZero() {
 		t.Error("Snapshot timestamp is zero")
 	}
 
-	// Verify banner counts
 	counts := make(map[int]int)
 	for _, banner := range snapshot.Banners {
 		counts[banner.BannerID] = banner.Count
@@ -78,7 +73,6 @@ func TestGetCountSnapshot(t *testing.T) {
 func TestZeroOutCounts(t *testing.T) {
 	repo := setupTestRepository()
 
-	// Register some clicks
 	repo.RegisterClick(1)
 	repo.RegisterClick(2)
 	repo.RegisterClick(1)
@@ -130,7 +124,6 @@ func TestConcurrentClicks(t *testing.T) {
 	iterations := 100
 	goroutines := 10
 
-	// Create a channel to signal completion
 	done := make(chan bool)
 
 	// Launch multiple goroutines to register clicks concurrently
@@ -143,12 +136,10 @@ func TestConcurrentClicks(t *testing.T) {
 		}()
 	}
 
-	// Wait for all goroutines to complete
 	for i := 0; i < goroutines; i++ {
 		<-done
 	}
 
-	// Verify the final count
 	snapshot := repo.GetCountSnapshot()
 	found := false
 	for _, banner := range snapshot.Banners {

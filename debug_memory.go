@@ -53,7 +53,6 @@ func testRepositoryMemory(t *testing.T) {
 	runtime.GC()
 	runtime.ReadMemStats(&m1)
 
-	// Small test first
 	for i := 0; i < 100; i++ {
 		err := repo.RegisterClick(i % 10)
 		if err != nil {
@@ -89,7 +88,6 @@ func testServiceMemory(t *testing.T) {
 	runtime.GC()
 	runtime.ReadMemStats(&m1)
 
-	// Test service calls
 	for i := 0; i < 100; i++ {
 		req := model.StatisticsRequest{
 			BannerID: 1,
@@ -99,7 +97,7 @@ func testServiceMemory(t *testing.T) {
 
 		_, err := statsService.GetStatistics(context.Background(), req)
 		if err != nil {
-			// Expected for empty data, don't log every error
+			l.Error(err)
 		}
 	}
 
@@ -119,7 +117,6 @@ func testHTTPMemory(t *testing.T) {
 
 	// Small HTTP test with proper cleanup
 	for i := 0; i < 100; i++ {
-		// Click test
 		req1 := httptest.NewRequest("POST", "/click/1", nil)
 		resp1, err := app.Test(req1)
 		if err != nil {
@@ -128,7 +125,6 @@ func testHTTPMemory(t *testing.T) {
 			resp1.Body.Close() // IMPORTANT: Close response body
 		}
 
-		// Stats test
 		body := `{"from": "2024-01-01", "to": "2024-01-31"}`
 		req2 := httptest.NewRequest("POST", "/stats/1", bytes.NewBufferString(body))
 		req2.Header.Set("Content-Type", "application/json")
@@ -160,7 +156,6 @@ func testSmallLoad(t *testing.T) {
 
 		fmt.Printf("   Iteration %d: Memory = %d KB\n", iteration, m.Alloc/1024)
 
-		// Small load with proper cleanup
 		for i := 0; i < 50; i++ {
 			req := httptest.NewRequest("POST", "/click/1", nil)
 			resp, err := app.Test(req)
@@ -172,7 +167,6 @@ func testSmallLoad(t *testing.T) {
 		time.Sleep(100 * time.Millisecond)
 	}
 
-	// Check for consistent growth
 	fmt.Println("   Memory progression:")
 	for i, mem := range memoryReadings {
 		fmt.Printf("     Reading %d: %d KB\n", i, mem/1024)
@@ -223,7 +217,6 @@ func setupTestApp() *fiber.App {
 	return app
 }
 
-// TEST YOUR ACTUAL REPOSITORY IMPLEMENTATION
 func TestRepositoryImplementation(t *testing.T) {
 	fmt.Println("=== TESTING REPOSITORY DETAILS ===")
 
@@ -254,7 +247,6 @@ func TestRepositoryImplementation(t *testing.T) {
 	fmt.Printf("Final snapshot: %+v\n", finalSnapshot)
 }
 
-// FIND THE EXACT PROBLEM
 func TestIsolateProblem(t *testing.T) {
 	fmt.Println("=== ISOLATING THE PROBLEM ===")
 
@@ -290,7 +282,6 @@ func TestIsolateProblem(t *testing.T) {
 	}
 }
 
-// FIXED VERSION OF YOUR ORIGINAL FUNCTION
 func TestMemoryLeakFixed(t *testing.T) {
 	app := setupTestApp()
 
@@ -321,7 +312,6 @@ func TestMemoryLeakFixed(t *testing.T) {
 	runtime.GC()
 	runtime.ReadMemStats(&m2)
 
-	// FIX: Use signed arithmetic to detect overflow
 	allocDiff := int64(m2.Alloc) - int64(m1.Alloc)
 	totalAllocDiff := int64(m2.TotalAlloc) - int64(m1.TotalAlloc)
 
@@ -336,7 +326,6 @@ func TestMemoryLeakFixed(t *testing.T) {
 		return
 	}
 
-	// Assert memory growth is within acceptable limits
 	maxAcceptableGrowth := int64(10 * 1024 * 1024) // 10MB
 	if allocDiff > maxAcceptableGrowth {
 		t.Errorf("Potential memory leak detected: %d bytes growth", allocDiff)

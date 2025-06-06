@@ -112,13 +112,11 @@ func (s *StatisticsService) GetSnapshots() []model.Snapshot {
 
 func (s *StatisticsService) getFrom(request model.StatisticsRequest) (time.Time, error) {
 	if request.From != "" {
-		// Parse as local time, then convert to UTC to match storage
 		parsedFrom, err := time.ParseInLocation("2006-01-02T15:04:05", request.From, time.Local)
 		if err != nil {
 			return time.Time{}, fmt.Errorf("invalid 'from' time format: %w", err)
 		}
 
-		// Convert to UTC to match how you store clicks
 		parsedFromUTC := parsedFrom.UTC()
 
 		s.l.Debug(fmt.Sprintf("*** parsing 'from' time: input=%s, local=%s, UTC=%s",

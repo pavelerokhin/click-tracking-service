@@ -48,7 +48,6 @@ func main() {
 
 	go statisticsWorker.Run(ctx)
 
-	// register routes
 	http.NewRouter(
 		bannerRepository,
 		statisticsService,
@@ -71,7 +70,6 @@ func main() {
 		signal.Stop(sigCh)
 		close(sigCh)
 
-		// give services time to shut down gracefully
 		shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 30*time.Second)
 		defer shutdownCancel()
 

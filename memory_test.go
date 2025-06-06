@@ -26,11 +26,9 @@ func TestMemoryLeaks(t *testing.T) {
 	// Run operations that might leak memory
 	runLoadTest(app, 1000)
 
-	// Force garbage collection and get final memory stats
 	runtime.GC()
 	runtime.ReadMemStats(&m2)
 
-	// Calculate memory difference
 	allocDiff := m2.Alloc - m1.Alloc
 	totalAllocDiff := m2.TotalAlloc - m1.TotalAlloc
 
@@ -39,7 +37,6 @@ func TestMemoryLeaks(t *testing.T) {
 	fmt.Printf("Memory difference: %d KB\n", allocDiff/1024)
 	fmt.Printf("Total allocated difference: %d KB\n", totalAllocDiff/1024)
 
-	// Assert memory growth is within acceptable limits
 	maxAcceptableGrowth := uint64(10 * 1024 * 1024) // 10MB
 	if allocDiff > maxAcceptableGrowth {
 		t.Errorf("Potential memory leak detected: %d bytes growth", allocDiff)
@@ -267,7 +264,6 @@ func TestRaceConditions(t *testing.T) {
 		}()
 	}
 
-	// Wait for all goroutines to complete
 	for i := 0; i < 10; i++ {
 		<-done
 	}

@@ -36,7 +36,7 @@ func NewZapLogger(appName string, writers ...io.Writer) *Logger {
 	core := zapcore.NewCore(
 		zapcore.NewJSONEncoder(cfg),
 		zapcore.NewMultiWriteSyncer(multiWriters...),
-		zapcore.DebugLevel,
+		zapcore.WarnLevel,
 	)
 
 	return &Logger{
